@@ -1,0 +1,47 @@
+@model IReadOnlyList<SolicitorCRMApp.Models.User>
+@{
+    Layout = "_Layout";
+}
+
+<section class="card">
+    <div class="card-header">
+        <h1>User Administration</h1>
+        <a asp-action="Create" class="primary">Add User</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Job Title</th>
+                <th>Department</th>
+                <th>User Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Title @user.FirstName @user.Surname</td>
+                    <td>@user.Email</td>
+                    <td>@user.JobTitle</td>
+                    <td>@user.Department</td>
+                    <td>@user.UserTypeName</td>
+                    <td>@(user.Enabled ? "Enabled" : "Disabled")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@user.Id">Edit</a>
+                        <form asp-action="Toggle" method="post" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <input type="hidden" name="enable" value="@(!user.Enabled)" />
+                            <button type="submit" class="link-button">@(user.Enabled ? "Disable" : "Enable")</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

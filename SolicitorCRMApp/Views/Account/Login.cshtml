@@ -1,0 +1,36 @@
+@model SolicitorCRMApp.Models.LoginViewModel
+@{
+    Layout = "_Layout";
+}
+
+<section class="card">
+    <h1>Secure Login</h1>
+    <p>Please sign in to continue.</p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert">@Model.ErrorMessage</div>
+    }
+
+    <form asp-action="Login" method="post" class="form">
+        @Html.AntiForgeryToken()
+        <label>
+            Email
+            <input asp-for="Email" type="email" placeholder="you@example.com" required />
+        </label>
+        <span class="validation" asp-validation-for="Email"></span>
+
+        <label>
+            Password
+            <input asp-for="Password" type="password" placeholder="••••••••" required />
+        </label>
+        <span class="validation" asp-validation-for="Password"></span>
+
+        <label class="checkbox">
+            <input asp-for="RememberMe" type="checkbox" />
+            Remember me
+        </label>
+
+        <button type="submit" class="primary">Sign in</button>
+    </form>
+</section>
