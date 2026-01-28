@@ -1,0 +1,40 @@
+@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solicitor CRM</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo-area">
+            <img src="~/images/logo-placeholder.svg" alt="Solicitor CRM" />
+            <span>Solicitor CRM</span>
+        </div>
+        <nav class="nav">
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <a asp-controller="Home" asp-action="Index">Landing</a>
+                @if (User.HasClaim("UserType", "administrator"))
+                {
+                    <a asp-controller="Admin" asp-action="Index">Admin Users</a>
+                }
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="link-button">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+            }
+        </nav>
+    </header>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+</body>
+</html>

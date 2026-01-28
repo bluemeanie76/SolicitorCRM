@@ -1,0 +1,78 @@
+@model SolicitorCRMApp.Models.UserFormViewModel
+@{
+    Layout = "_Layout";
+    var isEdit = Model.Id.HasValue;
+}
+
+<section class="card">
+    <h1>@(isEdit ? "Edit User" : "Add User")</h1>
+
+    <form asp-action="Save" method="post" class="form-grid">
+        @Html.AntiForgeryToken()
+        @if (isEdit)
+        {
+            <input type="hidden" asp-for="Id" />
+        }
+
+        <label>
+            Title
+            <input asp-for="Title" />
+        </label>
+        <span class="validation" asp-validation-for="Title"></span>
+
+        <label>
+            First name
+            <input asp-for="FirstName" />
+        </label>
+        <span class="validation" asp-validation-for="FirstName"></span>
+
+        <label>
+            Surname
+            <input asp-for="Surname" />
+        </label>
+        <span class="validation" asp-validation-for="Surname"></span>
+
+        <label>
+            Email
+            <input asp-for="Email" type="email" />
+        </label>
+        <span class="validation" asp-validation-for="Email"></span>
+
+        <label>
+            Password
+            <input asp-for="Password" type="password" placeholder="@(isEdit ? "Leave blank to keep current" : "Enter a password")" />
+        </label>
+        <span class="validation" asp-validation-for="Password"></span>
+
+        <label>
+            Job title
+            <input asp-for="JobTitle" />
+        </label>
+        <span class="validation" asp-validation-for="JobTitle"></span>
+
+        <label>
+            Department
+            <input asp-for="Department" />
+        </label>
+        <span class="validation" asp-validation-for="Department"></span>
+
+        <label>
+            User type
+            <select asp-for="UserTypeId">
+                <option value="">Select a user type</option>
+                @foreach (var type in Model.UserTypes)
+                {
+                    <option value="@type.Id">@type.Name</option>
+                }
+            </select>
+        </label>
+        <span class="validation" asp-validation-for="UserTypeId"></span>
+
+        <label class="checkbox">
+            <input asp-for="Enabled" type="checkbox" />
+            Enabled
+        </label>
+
+        <button type="submit" class="primary">Save user</button>
+    </form>
+</section>
