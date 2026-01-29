@@ -1,4 +1,3 @@
-using System.Data;
 using Microsoft.Data.SqlClient;
 
 namespace SolicitorCRMApp.Data;
@@ -12,7 +11,7 @@ public sealed class SqlConnectionFactory : IDbConnectionFactory
         _connectionString = connectionString;
     }
 
-    public IDbConnection CreateConnection()
+    public SqlConnection CreateConnection()
     {
         return new SqlConnection(_connectionString);
     }
