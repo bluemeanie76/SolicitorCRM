@@ -15,15 +15,15 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        using var command = new SqlCommand("dbo.usp_User_GetByEmail", (SqlConnection)connection)
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_User_GetByEmail", connection)
         {
             CommandType = CommandType.StoredProcedure
         };
         command.Parameters.AddWithValue("@Email", email);
 
         await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
+        await using var reader = await command.ExecuteReaderAsync();
 
         if (!await reader.ReadAsync())
         {
@@ -35,15 +35,15 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<User?> GetByIdAsync(int id)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        using var command = new SqlCommand("dbo.usp_User_GetById", (SqlConnection)connection)
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_User_GetById", connection)
         {
             CommandType = CommandType.StoredProcedure
         };
         command.Parameters.AddWithValue("@UserId", id);
 
         await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
+        await using var reader = await command.ExecuteReaderAsync();
 
         if (!await reader.ReadAsync())
         {
@@ -56,14 +56,14 @@ public sealed class UserRepository : IUserRepository
     public async Task<IReadOnlyList<User>> GetAllAsync()
     {
         var users = new List<User>();
-        using var connection = _connectionFactory.CreateConnection();
-        using var command = new SqlCommand("dbo.usp_User_GetAll", (SqlConnection)connection)
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_User_GetAll", connection)
         {
             CommandType = CommandType.StoredProcedure
         };
 
         await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
+        await using var reader = await command.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
             users.Add(MapUser(reader));
@@ -75,14 +75,14 @@ public sealed class UserRepository : IUserRepository
     public async Task<IReadOnlyList<UserType>> GetUserTypesAsync()
     {
         var types = new List<UserType>();
-        using var connection = _connectionFactory.CreateConnection();
-        using var command = new SqlCommand("dbo.usp_UserTypes_GetAll", (SqlConnection)connection)
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_UserTypes_GetAll", connection)
         {
             CommandType = CommandType.StoredProcedure
         };
 
         await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
+        await using var reader = await command.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
             types.Add(new UserType
@@ -97,8 +97,8 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<int> CreateAsync(UserFormViewModel model, string passwordHash, string passwordSalt)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        using var command = new SqlCommand("dbo.usp_User_Insert", (SqlConnection)connection)
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_User_Insert", connection)
         {
             CommandType = CommandType.StoredProcedure
         };
@@ -111,8 +111,8 @@ public sealed class UserRepository : IUserRepository
 
     public async Task UpdateAsync(UserFormViewModel model, string? passwordHash, string? passwordSalt)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        using var command = new SqlCommand("dbo.usp_User_Update", (SqlConnection)connection)
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_User_Update", connection)
         {
             CommandType = CommandType.StoredProcedure
         };
@@ -126,8 +126,8 @@ public sealed class UserRepository : IUserRepository
 
     public async Task SetEnabledAsync(int id, bool enabled)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        using var command = new SqlCommand("dbo.usp_User_SetEnabled", (SqlConnection)connection)
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_User_SetEnabled", connection)
         {
             CommandType = CommandType.StoredProcedure
         };

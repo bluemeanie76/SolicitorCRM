@@ -1,8 +1,8 @@
-using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace SolicitorCRMApp.Data;
 
 public interface IDbConnectionFactory
 {
-    IDbConnection CreateConnection();
+    SqlConnection CreateConnection();
 }
