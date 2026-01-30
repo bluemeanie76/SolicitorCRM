@@ -8,6 +8,6 @@ public sealed class HomeController : Controller
 {
     public IActionResult Index()
     {
-        return View();
+        return RedirectToAction("Index", "Tasks");
     }
 }

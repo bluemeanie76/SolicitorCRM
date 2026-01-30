@@ -32,6 +32,25 @@ public sealed class TaskRepository : ITaskRepository
         return MapTask(reader);
     }
 
+    public async Task<IReadOnlyList<TaskItem>> GetAllAsync()
+    {
+        var tasks = new List<TaskItem>();
+        await using var connection = _connectionFactory.CreateConnection();
+        await using var command = new SqlCommand("dbo.usp_Task_GetAll", connection)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        await connection.OpenAsync();
+        await using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            tasks.Add(MapTask(reader));
+        }
+
+        return tasks;
+    }
+
     public async Task<IReadOnlyList<TaskItem>> GetAssignedToUserAsync(int userId)
     {
         return await GetTasksAsync("dbo.usp_Task_GetAssignedToUser", userId);
@@ -220,9 +239,15 @@ public sealed class TaskRepository : ITaskRepository
             AssignedUserId = reader.IsDBNull(reader.GetOrdinal("AssignedUserId"))
                 ? null
                 : reader.GetInt32(reader.GetOrdinal("AssignedUserId")),
+            AssignedUserName = reader.IsDBNull(reader.GetOrdinal("AssignedUserName"))
+                ? null
+                : reader.GetString(reader.GetOrdinal("AssignedUserName")),
             AssignedPoolId = reader.IsDBNull(reader.GetOrdinal("AssignedPoolId"))
                 ? null
                 : reader.GetInt32(reader.GetOrdinal("AssignedPoolId")),
+            AssignedPoolName = reader.IsDBNull(reader.GetOrdinal("AssignedPoolName"))
+                ? null
+                : reader.GetString(reader.GetOrdinal("AssignedPoolName")),
             CreatedByUserId = reader.GetInt32(reader.GetOrdinal("CreatedByUserId")),
             TotalMinutes = reader.GetInt32(reader.GetOrdinal("TotalMinutes")),
             DateAdded = reader.GetDateTime(reader.GetOrdinal("DateAdded")),

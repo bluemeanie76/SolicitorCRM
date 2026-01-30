@@ -346,18 +346,55 @@ BEGIN
            t.TaskDescription,
            t.TaskDeadline,
            t.AssignedUserId,
+           CONCAT(assignedUser.FirstName, ' ', assignedUser.Surname) AS AssignedUserName,
            t.AssignedPoolId,
+           assignedPool.Name AS AssignedPoolName,
            t.CreatedByUserId,
            COALESCE(timeTotals.TotalMinutes, 0) AS TotalMinutes,
            t.DateAdded,
            t.DateUpdated
     FROM dbo.Tasks t
+    LEFT JOIN dbo.Users assignedUser ON t.AssignedUserId = assignedUser.Id
+    LEFT JOIN dbo.Pools assignedPool ON t.AssignedPoolId = assignedPool.Id
     OUTER APPLY (
         SELECT SUM(TotalMinutes) AS TotalMinutes
         FROM dbo.TaskTimeEntries
         WHERE TaskId = t.Id
     ) timeTotals
     WHERE t.Id = @TaskId;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_Task_GetAll
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT t.Id,
+           t.IsUrgent,
+           t.ContactName,
+           t.ContactEmail,
+           t.ContactTelephone,
+           t.ContactNotes,
+           t.TaskDescription,
+           t.TaskDeadline,
+           t.AssignedUserId,
+           CONCAT(assignedUser.FirstName, ' ', assignedUser.Surname) AS AssignedUserName,
+           t.AssignedPoolId,
+           assignedPool.Name AS AssignedPoolName,
+           t.CreatedByUserId,
+           COALESCE(timeTotals.TotalMinutes, 0) AS TotalMinutes,
+           t.DateAdded,
+           t.DateUpdated
+    FROM dbo.Tasks t
+    LEFT JOIN dbo.Users assignedUser ON t.AssignedUserId = assignedUser.Id
+    LEFT JOIN dbo.Pools assignedPool ON t.AssignedPoolId = assignedPool.Id
+    OUTER APPLY (
+        SELECT SUM(TotalMinutes) AS TotalMinutes
+        FROM dbo.TaskTimeEntries
+        WHERE TaskId = t.Id
+    ) timeTotals
+    ORDER BY t.IsUrgent DESC, t.TaskDeadline ASC;
 END;
 GO
 
@@ -376,12 +413,16 @@ BEGIN
            t.TaskDescription,
            t.TaskDeadline,
            t.AssignedUserId,
+           CONCAT(assignedUser.FirstName, ' ', assignedUser.Surname) AS AssignedUserName,
            t.AssignedPoolId,
+           assignedPool.Name AS AssignedPoolName,
            t.CreatedByUserId,
            COALESCE(timeTotals.TotalMinutes, 0) AS TotalMinutes,
            t.DateAdded,
            t.DateUpdated
     FROM dbo.Tasks t
+    LEFT JOIN dbo.Users assignedUser ON t.AssignedUserId = assignedUser.Id
+    LEFT JOIN dbo.Pools assignedPool ON t.AssignedPoolId = assignedPool.Id
     OUTER APPLY (
         SELECT SUM(TotalMinutes) AS TotalMinutes
         FROM dbo.TaskTimeEntries
@@ -407,13 +448,17 @@ BEGIN
            t.TaskDescription,
            t.TaskDeadline,
            t.AssignedUserId,
+           CONCAT(assignedUser.FirstName, ' ', assignedUser.Surname) AS AssignedUserName,
            t.AssignedPoolId,
+           assignedPool.Name AS AssignedPoolName,
            t.CreatedByUserId,
            COALESCE(timeTotals.TotalMinutes, 0) AS TotalMinutes,
            t.DateAdded,
            t.DateUpdated
     FROM dbo.Tasks t
     INNER JOIN dbo.UserPools up ON t.AssignedPoolId = up.PoolId
+    LEFT JOIN dbo.Users assignedUser ON t.AssignedUserId = assignedUser.Id
+    LEFT JOIN dbo.Pools assignedPool ON t.AssignedPoolId = assignedPool.Id
     OUTER APPLY (
         SELECT SUM(TotalMinutes) AS TotalMinutes
         FROM dbo.TaskTimeEntries

@@ -23,10 +23,14 @@ public sealed class TasksController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = GetUserId();
+        var canViewAllTasks = User.HasClaim("UserType", UserTypeNames.SuperAdministrator)
+            || User.HasClaim("UserType", UserTypeNames.Administrator);
         var model = new TaskDashboardViewModel
         {
-            AssignedTasks = await _taskRepository.GetAssignedToUserAsync(userId),
-            PoolTasks = await _taskRepository.GetAssignedToUserPoolsAsync(userId)
+            CanViewAllTasks = canViewAllTasks,
+            AllTasks = canViewAllTasks ? await _taskRepository.GetAllAsync() : Array.Empty<TaskItem>(),
+            AssignedTasks = canViewAllTasks ? Array.Empty<TaskItem>() : await _taskRepository.GetAssignedToUserAsync(userId),
+            PoolTasks = canViewAllTasks ? Array.Empty<TaskItem>() : await _taskRepository.GetAssignedToUserPoolsAsync(userId)
         };
         return View(model);
     }
@@ -77,7 +81,8 @@ public sealed class TasksController : Controller
         };
 
         var taskId = await _taskRepository.CreateAsync(createModel);
-        return RedirectToAction(nameof(Edit), new { id = taskId });
+        TempData["TaskCreatedMessage"] = $"Task #{taskId} has been created.";
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]

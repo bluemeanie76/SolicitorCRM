@@ -2,6 +2,82 @@
 
 <h1>Tasks</h1>
 
+<section class="hero">
+    <h2>Welcome to Solicitor CRM</h2>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
+    </p>
+</section>
+
+@if (TempData["TaskCreatedMessage"] is string createdMessage)
+{
+    <div class="alert" role="alert">
+        @createdMessage
+    </div>
+}
+
+@functions {
+    private static string GetAssignmentLabel(SolicitorCRMApp.Models.TaskItem task)
+    {
+        if (!string.IsNullOrWhiteSpace(task.AssignedUserName))
+        {
+            return $"User: {task.AssignedUserName}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(task.AssignedPoolName))
+        {
+            return $"Pool: {task.AssignedPoolName}";
+        }
+
+        return "Unassigned";
+    }
+}
+
+@if (Model.CanViewAllTasks)
+{
+    <section class="card">
+        <h2>All Tasks</h2>
+        @if (!Model.AllTasks.Any())
+        {
+            <p>No tasks are available yet.</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Urgent</th>
+                    <th>Contact</th>
+                    <th>Description</th>
+                    <th>Assignment</th>
+                    <th>Deadline</th>
+                    <th>Total Time</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var task in Model.AllTasks)
+                {
+                    <tr>
+                        <td>@(task.IsUrgent ? "Yes" : "No")</td>
+                        <td>@task.ContactName</td>
+                        <td>@task.TaskDescription</td>
+                        <td>@GetAssignmentLabel(task)</td>
+                        <td>@task.TaskDeadline.ToString("d")</td>
+                        <td>@($"{task.TotalMinutes / 60}h {task.TotalMinutes % 60}m")</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@task.Id">View</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </section>
+}
+else
+{
 <section class="card">
     <h2>Assigned Tasks</h2>
     @if (!Model.AssignedTasks.Any())
@@ -77,3 +153,4 @@
         </table>
     }
 </section>
+}

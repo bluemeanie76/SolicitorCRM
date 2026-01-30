@@ -11,7 +11,9 @@ public sealed class TaskItem
     public string TaskDescription { get; set; } = string.Empty;
     public DateTime TaskDeadline { get; set; }
     public int? AssignedUserId { get; set; }
+    public string? AssignedUserName { get; set; }
     public int? AssignedPoolId { get; set; }
+    public string? AssignedPoolName { get; set; }
     public int CreatedByUserId { get; set; }
     public int TotalMinutes { get; set; }
     public DateTime DateAdded { get; set; }
