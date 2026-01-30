@@ -1,0 +1,9 @@
+namespace SolicitorCRMApp.Models;
+
+public sealed class TaskDashboardViewModel
+{
+    public bool CanViewAllTasks { get; set; }
+    public IReadOnlyList<TaskItem> AllTasks { get; set; } = Array.Empty<TaskItem>();
+    public IReadOnlyList<TaskItem> AssignedTasks { get; set; } = Array.Empty<TaskItem>();
+    public IReadOnlyList<TaskItem> PoolTasks { get; set; } = Array.Empty<TaskItem>();
+}

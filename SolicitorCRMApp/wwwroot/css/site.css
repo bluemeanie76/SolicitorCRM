@@ -94,6 +94,18 @@ select {
     border: 1px solid #cbd4e1;
 }
 
+textarea {
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #cbd4e1;
+    min-height: 120px;
+}
+
+.form-row {
+    display: grid;
+    gap: 0.5rem;
+}
+
 .primary {
     background: #1f3a60;
     color: #fff;

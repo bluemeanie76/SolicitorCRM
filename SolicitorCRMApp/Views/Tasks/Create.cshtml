@@ -1,0 +1,63 @@
+@model SolicitorCRMApp.Models.TaskFormViewModel
+
+<h1>Create Task</h1>
+
+<form asp-action="Create" method="post" class="form">
+    @Html.AntiForgeryToken()
+    <div class="form-row">
+        <label asp-for="IsUrgent">Urgent</label>
+        <input asp-for="IsUrgent" type="checkbox" />
+    </div>
+    <div class="form-row">
+        <label asp-for="ContactName"></label>
+        <input asp-for="ContactName" />
+        <span asp-validation-for="ContactName"></span>
+    </div>
+    <div class="form-row">
+        <label asp-for="ContactEmail"></label>
+        <input asp-for="ContactEmail" />
+        <span asp-validation-for="ContactEmail"></span>
+    </div>
+    <div class="form-row">
+        <label asp-for="ContactTelephone"></label>
+        <input asp-for="ContactTelephone" />
+    </div>
+    <div class="form-row">
+        <label asp-for="ContactNotes"></label>
+        <textarea asp-for="ContactNotes"></textarea>
+    </div>
+    <div class="form-row">
+        <label asp-for="TaskDescription"></label>
+        <textarea asp-for="TaskDescription"></textarea>
+        <span asp-validation-for="TaskDescription"></span>
+    </div>
+    <div class="form-row">
+        <label asp-for="TaskDeadline"></label>
+        <input asp-for="TaskDeadline" type="date" />
+        <span asp-validation-for="TaskDeadline"></span>
+    </div>
+    <div class="form-row">
+        <label asp-for="AssignedUserId">Assign to user</label>
+        <select asp-for="AssignedUserId">
+            <option value="">Select user</option>
+            @foreach (var user in Model.Users)
+            {
+                <option value="@user.Id">@($"{user.FirstName} {user.Surname}")</option>
+            }
+        </select>
+    </div>
+    <div class="form-row">
+        <label asp-for="AssignedPoolId">Assign to pool</label>
+        <select asp-for="AssignedPoolId">
+            <option value="">Select pool</option>
+            @foreach (var pool in Model.Pools)
+            {
+                <option value="@pool.Id">@pool.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-row">
+        <button type="submit">Create Task</button>
+        <a asp-action="Index" class="link-button">Cancel</a>
+    </div>
+</form>

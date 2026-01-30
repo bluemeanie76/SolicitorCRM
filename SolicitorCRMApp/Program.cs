@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SolicitorCRMApp.Data;
+using SolicitorCRMApp.Models;
 using SolicitorCRMApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,13 +17,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdministratorOnly", policy =>
-        policy.RequireClaim("UserType", "administrator"));
+        policy.RequireAssertion(context =>
+            context.User.HasClaim("UserType", UserTypeNames.Administrator)
+            || context.User.HasClaim("UserType", UserTypeNames.SuperAdministrator)));
+    options.AddPolicy("SuperAdministratorOnly", policy =>
+        policy.RequireClaim("UserType", UserTypeNames.SuperAdministrator));
 });
 
 builder.Services.AddSingleton<IDbConnectionFactory>(sp =>
     new SqlConnectionFactory(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPoolRepository, PoolRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
