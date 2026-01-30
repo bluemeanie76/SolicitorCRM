@@ -23,8 +23,7 @@ public sealed class TasksController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = GetUserId();
-        var canViewAllTasks = User.HasClaim("UserType", UserTypeNames.SuperAdministrator)
-            || User.HasClaim("UserType", UserTypeNames.Administrator);
+        var canViewAllTasks = IsAdministrator();
         var model = new TaskDashboardViewModel
         {
             CanViewAllTasks = canViewAllTasks,
@@ -118,6 +117,11 @@ public sealed class TasksController : Controller
             ModelState.AddModelError(nameof(model.Task.AssignedUserId), "Assign the task to a user or a pool.");
         }
 
+        if (!IsAdministrator() && model.Task.AssignedUserId.HasValue && model.Task.AssignedUserId != GetUserId())
+        {
+            ModelState.AddModelError(nameof(model.Task.AssignedUserId), "You can only assign a pool task to yourself.");
+        }
+
         if (!ModelState.IsValid)
         {
             var invalidModel = await BuildTaskDetailsViewModelAsync(task);
@@ -194,8 +198,7 @@ public sealed class TasksController : Controller
 
     private async Task<bool> CanAccessTaskAsync(TaskItem task)
     {
-        if (User.HasClaim("UserType", UserTypeNames.SuperAdministrator)
-            || User.HasClaim("UserType", UserTypeNames.Administrator))
+        if (IsAdministrator())
         {
             return true;
         }
@@ -212,6 +215,11 @@ public sealed class TasksController : Controller
 
     private async Task<TaskDetailsViewModel> BuildTaskDetailsViewModelAsync(TaskItem task)
     {
+        var userId = GetUserId();
+        var users = IsAdministrator()
+            ? await _userRepository.GetAllAsync()
+            : (await _userRepository.GetAllAsync()).Where(user => user.Id == userId);
+
         return new TaskDetailsViewModel
         {
             Task = new TaskFormViewModel
@@ -226,11 +234,17 @@ public sealed class TasksController : Controller
                 TaskDeadline = task.TaskDeadline,
                 AssignedUserId = task.AssignedUserId,
                 AssignedPoolId = task.AssignedPoolId,
-                Users = (await _userRepository.GetAllAsync()).ToList(),
+                Users = users.ToList(),
                 Pools = (await _poolRepository.GetAllAsync()).ToList()
             },
             Notes = await _taskRepository.GetNotesAsync(task.Id),
             TimeEntries = await _taskRepository.GetTimeEntriesAsync(task.Id)
         };
+    }
+
+    private bool IsAdministrator()
+    {
+        return User.HasClaim("UserType", UserTypeNames.SuperAdministrator)
+            || User.HasClaim("UserType", UserTypeNames.Administrator);
     }
 }

@@ -465,6 +465,7 @@ BEGIN
         WHERE TaskId = t.Id
     ) timeTotals
     WHERE up.UserId = @UserId
+      AND t.AssignedUserId IS NULL
     ORDER BY t.IsUrgent DESC, t.TaskDeadline ASC;
 END;
 GO
