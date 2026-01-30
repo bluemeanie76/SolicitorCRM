@@ -47,13 +47,17 @@
     </div>
     <div class="form-row">
         <label asp-for="Task.AssignedPoolId">Assign to pool</label>
-        <select asp-for="Task.AssignedPoolId">
+        <select asp-for="Task.AssignedPoolId" disabled="@(Model.Task.CanEditPool ? null : "disabled")">
             <option value="">Select pool</option>
             @foreach (var pool in Model.Task.Pools)
             {
                 <option value="@pool.Id">@pool.Name</option>
             }
         </select>
+        @if (!Model.Task.CanEditPool)
+        {
+            <input type="hidden" asp-for="Task.AssignedPoolId" />
+        }
     </div>
     <div class="form-row">
         <button type="submit">Save Task</button>

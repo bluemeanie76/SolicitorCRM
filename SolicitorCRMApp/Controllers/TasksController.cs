@@ -122,10 +122,24 @@ public sealed class TasksController : Controller
             ModelState.AddModelError(nameof(model.Task.AssignedUserId), "You can only assign a pool task to yourself.");
         }
 
+        if (!IsAdministrator() && model.Task.AssignedPoolId != task.AssignedPoolId)
+        {
+            ModelState.AddModelError(nameof(model.Task.AssignedPoolId), "You cannot change the assigned pool.");
+        }
+
         if (!ModelState.IsValid)
         {
             var invalidModel = await BuildTaskDetailsViewModelAsync(task);
             invalidModel.Task = model.Task;
+            invalidModel.Task.CanEditPool = IsAdministrator();
+            invalidModel.Task.Users = invalidModel.Task.Users.Any()
+                ? invalidModel.Task.Users
+                : (IsAdministrator()
+                    ? (await _userRepository.GetAllAsync()).ToList()
+                    : (await _userRepository.GetAllAsync()).Where(user => user.Id == GetUserId()).ToList());
+            invalidModel.Task.Pools = invalidModel.Task.Pools.Any()
+                ? invalidModel.Task.Pools
+                : (await _poolRepository.GetAllAsync()).ToList();
             return View("Edit", invalidModel);
         }
 
@@ -234,6 +248,7 @@ public sealed class TasksController : Controller
                 TaskDeadline = task.TaskDeadline,
                 AssignedUserId = task.AssignedUserId,
                 AssignedPoolId = task.AssignedPoolId,
+                CanEditPool = IsAdministrator(),
                 Users = users.ToList(),
                 Pools = (await _poolRepository.GetAllAsync()).ToList()
             },

@@ -12,6 +12,7 @@ public sealed class TaskFormViewModel
     public DateTime TaskDeadline { get; set; } = DateTime.UtcNow.Date.AddDays(1);
     public int? AssignedUserId { get; set; }
     public int? AssignedPoolId { get; set; }
+    public bool CanEditPool { get; set; }
     public List<User> Users { get; set; } = new();
     public List<Pool> Pools { get; set; } = new();
 }
