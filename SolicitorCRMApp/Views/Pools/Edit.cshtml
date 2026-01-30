@@ -1,0 +1,84 @@
+@model SolicitorCRMApp.Models.PoolEditViewModel
+
+<h1>@(Model.Id.HasValue ? "Edit Pool" : "Create Pool")</h1>
+
+<form asp-action="Save" method="post" class="form">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div class="form-row">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div class="form-row">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <div class="form-row">
+        <label asp-for="Enabled">Enabled</label>
+        <input asp-for="Enabled" type="checkbox" />
+    </div>
+    <div class="form-row">
+        <button type="submit">Save Pool</button>
+        <a asp-action="Index" class="link-button">Back to Pools</a>
+    </div>
+</form>
+
+@if (Model.Id.HasValue)
+{
+    <section class="card">
+        <h2>Assign Users</h2>
+        <form asp-action="AddUser" method="post" class="form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="form-row">
+                <label asp-for="SelectedUserId">Select user</label>
+                <select asp-for="SelectedUserId">
+                    <option value="">Choose a user</option>
+                    @foreach (var user in Model.Users)
+                    {
+                        <option value="@user.Id">@($"{user.FirstName} {user.Surname}")</option>
+                    }
+                </select>
+            </div>
+            <button type="submit">Add User</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Current Members</h2>
+        @if (!Model.AssignedUsers.Any())
+        {
+            <p>No users assigned to this pool.</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in Model.AssignedUsers)
+                {
+                    <tr>
+                        <td>@($"{user.FirstName} {user.Surname}")</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <form asp-action="RemoveUser" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="link-button">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </section>
+}

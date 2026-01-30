@@ -1,0 +1,79 @@
+@model SolicitorCRMApp.Models.TaskDashboardViewModel
+
+<h1>Tasks</h1>
+
+<section class="card">
+    <h2>Assigned Tasks</h2>
+    @if (!Model.AssignedTasks.Any())
+    {
+        <p>No tasks have been assigned to you yet.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Urgent</th>
+                <th>Contact</th>
+                <th>Description</th>
+                <th>Deadline</th>
+                <th>Total Time</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var task in Model.AssignedTasks)
+            {
+                <tr>
+                    <td>@(task.IsUrgent ? "Yes" : "No")</td>
+                    <td>@task.ContactName</td>
+                    <td>@task.TaskDescription</td>
+                    <td>@task.TaskDeadline.ToString("d")</td>
+                    <td>@($"{task.TotalMinutes / 60}h {task.TotalMinutes % 60}m")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@task.Id">View</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</section>
+
+<section class="card">
+    <h2>Pool Tasks</h2>
+    @if (!Model.PoolTasks.Any())
+    {
+        <p>No tasks are assigned to your pools.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Urgent</th>
+                <th>Contact</th>
+                <th>Description</th>
+                <th>Deadline</th>
+                <th>Total Time</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var task in Model.PoolTasks)
+            {
+                <tr>
+                    <td>@(task.IsUrgent ? "Yes" : "No")</td>
+                    <td>@task.ContactName</td>
+                    <td>@task.TaskDescription</td>
+                    <td>@task.TaskDeadline.ToString("d")</td>
+                    <td>@($"{task.TotalMinutes / 60}h {task.TotalMinutes % 60}m")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@task.Id">View</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</section>

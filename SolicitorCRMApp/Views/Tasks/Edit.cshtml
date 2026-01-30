@@ -1,0 +1,143 @@
+@model SolicitorCRMApp.Models.TaskDetailsViewModel
+
+<h1>Edit Task</h1>
+
+<form asp-action="Save" method="post" class="form">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Task.Id" />
+    <div class="form-row">
+        <label asp-for="Task.IsUrgent">Urgent</label>
+        <input asp-for="Task.IsUrgent" type="checkbox" />
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.ContactName"></label>
+        <input asp-for="Task.ContactName" />
+        <span asp-validation-for="Task.ContactName"></span>
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.ContactEmail"></label>
+        <input asp-for="Task.ContactEmail" />
+        <span asp-validation-for="Task.ContactEmail"></span>
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.ContactTelephone"></label>
+        <input asp-for="Task.ContactTelephone" />
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.ContactNotes"></label>
+        <textarea asp-for="Task.ContactNotes"></textarea>
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.TaskDescription"></label>
+        <textarea asp-for="Task.TaskDescription"></textarea>
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.TaskDeadline"></label>
+        <input asp-for="Task.TaskDeadline" type="date" />
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.AssignedUserId">Assign to user</label>
+        <select asp-for="Task.AssignedUserId">
+            <option value="">Select user</option>
+            @foreach (var user in Model.Task.Users)
+            {
+                <option value="@user.Id">@($"{user.FirstName} {user.Surname}")</option>
+            }
+        </select>
+    </div>
+    <div class="form-row">
+        <label asp-for="Task.AssignedPoolId">Assign to pool</label>
+        <select asp-for="Task.AssignedPoolId">
+            <option value="">Select pool</option>
+            @foreach (var pool in Model.Task.Pools)
+            {
+                <option value="@pool.Id">@pool.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-row">
+        <button type="submit">Save Task</button>
+        <a asp-action="Index" class="link-button">Back to Tasks</a>
+    </div>
+</form>
+
+<section class="card">
+    <h2>Notes</h2>
+    <form asp-action="AddNote" method="post" class="form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Task.Id" />
+        <div class="form-row">
+            <label for="note">Add note</label>
+            <textarea id="note" name="note"></textarea>
+        </div>
+        <button type="submit">Add Note</button>
+    </form>
+    @if (!Model.Notes.Any())
+    {
+        <p>No notes yet.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var note in Model.Notes)
+            {
+                <li>@note.Note (@note.DateAdded.ToString("g"))</li>
+            }
+        </ul>
+    }
+</section>
+
+<section class="card">
+    <h2>Time Entries</h2>
+    <form asp-action="LogTime" method="post" class="form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Task.Id" />
+        <div class="form-row">
+            <label for="hours">Hours</label>
+            <select id="hours" name="hours">
+                @for (var i = 0; i <= 12; i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="minutes">Minutes</label>
+            <select id="minutes" name="minutes">
+                @for (var i = 0; i < 60; i += 5)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+        </div>
+        <button type="submit">Log Time</button>
+    </form>
+    @if (!Model.TimeEntries.Any())
+    {
+        <p>No time entries logged.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Hours</th>
+                <th>Minutes</th>
+                <th>Total</th>
+                <th>Logged At</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var entry in Model.TimeEntries)
+            {
+                <tr>
+                    <td>@entry.Hours</td>
+                    <td>@entry.Minutes</td>
+                    <td>@($"{entry.TotalMinutes / 60}h {entry.TotalMinutes % 60}m")</td>
+                    <td>@entry.DateAdded.ToString("g")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</section>

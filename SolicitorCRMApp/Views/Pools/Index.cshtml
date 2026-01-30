@@ -1,0 +1,31 @@
+@model IReadOnlyList<SolicitorCRMApp.Models.Pool>
+
+<h1>Pools</h1>
+
+<p>
+    <a asp-action="Create" class="primary">Create Pool</a>
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Enabled</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var pool in Model)
+    {
+        <tr>
+            <td>@pool.Name</td>
+            <td>@pool.Description</td>
+            <td>@(pool.Enabled ? "Yes" : "No")</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@pool.Id">Manage</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
