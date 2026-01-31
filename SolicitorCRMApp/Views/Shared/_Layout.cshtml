@@ -5,24 +5,24 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solicitor CRM</title>
+    <title>CRM</title>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header class="site-header">
         <div class="logo-area">
-            <img src="~/images/logo-placeholder.svg" alt="Solicitor CRM" />
-            <span>Solicitor CRM</span>
+            <img src="~/images/logo-placeholder.svg" alt="CRM" />
+            <span>CRM</span>
         </div>
         <nav class="nav">
             @if (User.Identity?.IsAuthenticated ?? false)
             {
-                <a asp-controller="Home" asp-action="Index">Home</a>
-                <a asp-controller="Tasks" asp-action="Index">Tasks</a>
+                <!--a asp-controller="Home" asp-action="Index">Home</a-->
+                <a asp-controller="Tasks" asp-action="Index">Home</a>
                 @if (User.HasClaim("UserType", UserTypeNames.Administrator)
                      || User.HasClaim("UserType", UserTypeNames.SuperAdministrator))
                 {
-                    <a asp-controller="Admin" asp-action="Index">Admin Users</a>
+                    <a asp-controller="Admin" asp-action="Index">Users</a>
                     <a asp-controller="Tasks" asp-action="Create">Add Task</a>
                 }
                 @if (User.HasClaim("UserType", UserTypeNames.SuperAdministrator))

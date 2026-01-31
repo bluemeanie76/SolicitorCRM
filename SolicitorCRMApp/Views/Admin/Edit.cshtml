@@ -7,7 +7,7 @@
 <section class="card">
     <h1>@(isEdit ? "Edit User" : "Add User")</h1>
 
-    <form asp-action="Save" method="post" class="form-grid">
+    <form asp-action="Save" method="post" class="form">
         @Html.AntiForgeryToken()
         @if (isEdit)
         {
@@ -34,13 +34,13 @@
 
         <label>
             Email
-            <input asp-for="Email" type="email" />
+            <input asp-for="Email" type="email" autocomplete="email" />
         </label>
         <span class="validation" asp-validation-for="Email"></span>
 
         <label>
             Password
-            <input asp-for="Password" type="password" placeholder="@(isEdit ? "Leave blank to keep current" : "Enter a password")" />
+            <input asp-for="Password" type="password" placeholder="@(isEdit ? "Leave blank to keep current" : "Enter a password")" autocomplete="new-password" />
         </label>
         <span class="validation" asp-validation-for="Password"></span>
 

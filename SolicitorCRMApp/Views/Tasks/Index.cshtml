@@ -3,13 +3,13 @@
 <h1>Tasks</h1>
 
 <section class="hero">
-    <h2>Welcome to Solicitor CRM</h2>
+    <h2>Welcome to the CRM</h2>
     <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
         dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
     </p>
 </section>
-
+<br/>
 @if (TempData["TaskCreatedMessage"] is string createdMessage)
 {
     <div class="alert" role="alert">
@@ -115,9 +115,9 @@ else
         </table>
     }
 </section>
-
+<br />
 <section class="card">
-    <h2>Pool Tasks</h2>
+    <h2>Tasks Pool</h2>
     @if (!Model.PoolTasks.Any())
     {
         <p>No tasks are assigned to your pools.</p>

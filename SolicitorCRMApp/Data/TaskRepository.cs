@@ -178,7 +178,8 @@ public sealed class TaskRepository : ITaskRepository
                 Hours = reader.GetInt32(reader.GetOrdinal("Hours")),
                 Minutes = reader.GetInt32(reader.GetOrdinal("Minutes")),
                 TotalMinutes = reader.GetInt32(reader.GetOrdinal("TotalMinutes")),
-                DateAdded = reader.GetDateTime(reader.GetOrdinal("DateAdded"))
+                DateAdded = reader.GetDateTime(reader.GetOrdinal("DateAdded")),
+                LoggedByName = reader.GetString(reader.GetOrdinal("LoggedByName"))
             });
         }
 

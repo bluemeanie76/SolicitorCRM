@@ -9,4 +9,5 @@ public sealed class TaskTimeEntry
     public int Minutes { get; set; }
     public int TotalMinutes { get; set; }
     public DateTime DateAdded { get; set; }
+    public string LoggedByName { get; set; }
 }

@@ -1,7 +1,7 @@
 @model SolicitorCRMApp.Models.PoolEditViewModel
 
 <h1>@(Model.Id.HasValue ? "Edit Pool" : "Create Pool")</h1>
-
+<section class="card">
 <form asp-action="Save" method="post" class="form">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
@@ -20,10 +20,11 @@
     </div>
     <div class="form-row">
         <button type="submit">Save Pool</button>
-        <a asp-action="Index" class="link-button">Back to Pools</a>
+        <a asp-action="Index" class="pagenav">Back to Pools</a>
     </div>
 </form>
-
+</section>
+<br />
 @if (Model.Id.HasValue)
 {
     <section class="card">
@@ -44,7 +45,7 @@
             <button type="submit">Add User</button>
         </form>
     </section>
-
+    <br/>
     <section class="card">
         <h2>Current Members</h2>
         @if (!Model.AssignedUsers.Any())
@@ -72,7 +73,7 @@
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@Model.Id" />
                                 <input type="hidden" name="userId" value="@user.Id" />
-                                <button type="submit" class="link-button">Remove</button>
+                                <button type="submit" class="link-button ">Remove</button>
                             </form>
                         </td>
                     </tr>

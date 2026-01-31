@@ -524,14 +524,16 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT Id,
-           TaskId,
-           LoggedByUserId,
-           Hours,
-           Minutes,
-           TotalMinutes,
-           DateAdded
-    FROM dbo.TaskTimeEntries
+    SELECT te.Id,
+           te.TaskId,
+           te.LoggedByUserId,
+           te.Hours,
+           te.Minutes,
+			te.TotalMinutes,
+           te.DateAdded,
+		   u.FirstName + ' ' + u.Surname as LoggedByName
+    FROM [dbo].[TaskTimeEntries] te
+	JOIN [dbo].[Users] u on te.LoggedByUserId = u.Id
     WHERE TaskId = @TaskId
     ORDER BY DateAdded DESC;
 END;

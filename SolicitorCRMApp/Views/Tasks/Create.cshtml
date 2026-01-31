@@ -1,12 +1,14 @@
 @model SolicitorCRMApp.Models.TaskFormViewModel
 
 <h1>Create Task</h1>
-
+<section class="card">
 <form asp-action="Create" method="post" class="form">
     @Html.AntiForgeryToken()
     <div class="form-row">
-        <label asp-for="IsUrgent">Urgent</label>
+    <label class="checkbox">
         <input asp-for="IsUrgent" type="checkbox" />
+        Urgent
+    </label>
     </div>
     <div class="form-row">
         <label asp-for="ContactName"></label>
@@ -58,6 +60,7 @@
     </div>
     <div class="form-row">
         <button type="submit">Create Task</button>
-        <a asp-action="Index" class="link-button">Cancel</a>
+        <a asp-action="Index" class="pagenav">Cancel</a>
     </div>
 </form>
+</section>
